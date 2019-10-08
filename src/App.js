@@ -70,6 +70,7 @@ const App = () => {
         {!submitted && latest && (
           <React.Fragment>
             <Input
+              autoFocus
               onKeyUp={e => setEmail(e.target.value)}
               placeholder="your@email.com"
               type="email"
@@ -95,7 +96,7 @@ const App = () => {
                     setSubmitted(true);
                     setSubmitting(false);
                     setLatest(false);
-                    setTimeout(() => setSubmitted(false), 2000);
+                    setTimeout(() => setSubmitted(false), 4000);
                   } catch (error) {
                     console.log(error);
                     setSubmitting(false);
