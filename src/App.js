@@ -25,7 +25,7 @@ const App = () => {
       let now = new Date().getTime();
       let diff = (now - ping.getTime()) / 1000;
       console.log(diff);
-      if (diff > 30) window.location.reload();
+      // if (diff > 30) window.location.reload();
     }, 10000);
     const onPing = e => setPing(new Date());
 
