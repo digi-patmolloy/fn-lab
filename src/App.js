@@ -172,7 +172,7 @@ const Middle = styled.div`
 const Buttons = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 1rem;
+  margin-top: 2rem;
   justify-content: center;
   width: 100%;
   button {
