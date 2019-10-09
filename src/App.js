@@ -24,7 +24,7 @@ const App = () => {
     const interval = setInterval(() => {
       let now = new Date().getTime();
       let diff = (now - ping.getTime()) / 1000;
-      console.log(diff);
+      // console.log(diff);
       // if (diff > 30) window.location.reload();
     }, 10000);
     const onPing = e => setPing(new Date());
@@ -50,6 +50,26 @@ const App = () => {
       eventSource.removeEventListener("post", onAdd, false);
     };
   }, []);
+
+  const submit = async () => {
+    try {
+      setSubmitting(true);
+      const res = await restdb.patch(
+        `/rest/dc-fnl-tracking-person/${latest._id}/`,
+        {
+          email
+        }
+      );
+      setSubmitted(true);
+      setSubmitting(false);
+      setLatest(false);
+      setTimeout(() => setSubmitted(false), 4000);
+    } catch (error) {
+      console.log(error);
+      setSubmitting(false);
+      setLatest(false);
+    }
+  };
   return (
     <Container
       style={{ background: latest || submitted ? "rgb(0, 209, 255)" : "#fff" }}
@@ -68,7 +88,29 @@ const App = () => {
           </Waiting>
         )}
         {!submitted && latest && (
-          <React.Fragment>
+          <form
+            onSubmit={async e => {
+              try {
+                setSubmitting(true);
+                const res = await restdb.patch(
+                  `/rest/dc-fnl-tracking-person/${latest._id}/`,
+                  {
+                    email
+                  }
+                );
+                setSubmitted(true);
+                setSubmitting(false);
+                setLatest(false);
+                setTimeout(() => setSubmitted(false), 4000);
+              } catch (error) {
+                console.log(error);
+                setSubmitting(false);
+                setLatest(false);
+              }
+              e.preventDefault();
+              return false;
+            }}
+          >
             <Input
               autoFocus
               onKeyUp={e => setEmail(e.target.value)}
@@ -78,40 +120,19 @@ const App = () => {
             ></Input>
             <Buttons>
               {!submitting && (
-                <Button onClick={() => setLatest("")}>cancel</Button>
+                <Button type="button" onClick={() => setLatest("")}>
+                  cancel
+                </Button>
               )}
-              <Button
-                primary
-                onClick={async () => {
-                  try {
-                    console.log("save email", email, "to", latest);
-                    setSubmitting(true);
-                    const res = await restdb.patch(
-                      `/rest/dc-fnl-tracking-person/${latest._id}/`,
-                      {
-                        email
-                      }
-                    );
-                    // console.log(res);
-                    setSubmitted(true);
-                    setSubmitting(false);
-                    setLatest(false);
-                    setTimeout(() => setSubmitted(false), 4000);
-                  } catch (error) {
-                    console.log(error);
-                    setSubmitting(false);
-                    setLatest(false);
-                  }
-                }}
-              >
+              <Button primary type="submit">
                 {submitting ? (
                   <Loader size="tiny" inverted active inline />
                 ) : (
-                  "sign up"
+                  "send me info!"
                 )}
               </Button>
             </Buttons>
-          </React.Fragment>
+          </form>
         )}
       </Middle>
       <Bottom></Bottom>
@@ -175,12 +196,12 @@ const Buttons = styled.div`
   display: flex;
   flex-direction: row;
   margin-top: 0.5rem;
-  justify-content: flex-end;
+  justify-content: center;
   width: 100%;
   button {
-    font-size: 1.2rem;
+    font-size: 1.3rem !important;
     padding: 0.5rem;
-    margin-left: 0.5rem;
+    margin: 0 1rem;
   }
 `;
 const Top = styled.div`
