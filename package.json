@@ -8,6 +8,7 @@
     "lodash": "^4.17.4",
     "moment": "^2.24.0",
     "react": "^16.8.0",
+    "react-detect-offline": "^2.4.0",
     "react-dom": "^16.8.0",
     "react-scripts": "1.0.10",
     "semantic-ui-react": "^0.88.1",
