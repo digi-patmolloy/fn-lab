@@ -13,11 +13,7 @@ const App = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState();
 
-  // this.state = { ping: new Date(), evt: "", tickers: [] };
-
   // connect to the realtime database stream
-
-  // check if the realtime connection is dead, reload client if dead
   useEffect(() => {
     let eventSource = new EventSource(realtimeURL);
 
@@ -51,25 +47,6 @@ const App = () => {
     };
   }, []);
 
-  const submit = async () => {
-    try {
-      setSubmitting(true);
-      const res = await restdb.patch(
-        `/rest/dc-fnl-tracking-person/${latest._id}/`,
-        {
-          email
-        }
-      );
-      setSubmitted(true);
-      setSubmitting(false);
-      setLatest(false);
-      setTimeout(() => setSubmitted(false), 4000);
-    } catch (error) {
-      console.log(error);
-      setSubmitting(false);
-      setLatest(false);
-    }
-  };
   return (
     <Container
       style={{ background: latest || submitted ? "rgb(0, 209, 255)" : "#fff" }}
@@ -90,6 +67,7 @@ const App = () => {
         {!submitted && latest && (
           <form
             onSubmit={async e => {
+              e.preventDefault();
               try {
                 setSubmitting(true);
                 const res = await restdb.patch(
@@ -107,7 +85,6 @@ const App = () => {
                 setSubmitting(false);
                 setLatest(false);
               }
-              e.preventDefault();
               return false;
             }}
           >
@@ -195,7 +172,7 @@ const Middle = styled.div`
 const Buttons = styled.div`
   display: flex;
   flex-direction: row;
-  margin-top: 0.5rem;
+  margin-top: 1rem;
   justify-content: center;
   width: 100%;
   button {
