@@ -8,6 +8,7 @@ import styled, { keyframes } from "styled-components";
 import { Offline, Online } from "react-detect-offline";
 
 const App = () => {
+  const timeout_duration_seconds = 60;
   const [ping, setPing] = useState(new Date());
   const [email, setEmail] = useState();
   const [latest, setLatest] = useState();
@@ -47,6 +48,18 @@ const App = () => {
       eventSource.removeEventListener("post", onAdd, false);
     };
   }, []);
+
+  useEffect(() => {
+    if (latest) {
+      const timeout = setTimeout(() => {
+        // clear all
+        setEmail("");
+        setSubmitted(false);
+        setLatest(false);
+      }, timeout_duration_seconds * 1000);
+      return () => clearTimeout(timeout);
+    }
+  }, [latest, email]);
 
   return (
     <div>
@@ -123,11 +136,6 @@ const App = () => {
         </Container>
       </Online>
       <Offline>Offline</Offline>
-    </div>
-  );
-  return (
-    <div className="App">
-      <h1>{JSON.stringify(latest)}</h1>
     </div>
   );
 };
