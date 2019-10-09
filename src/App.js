@@ -5,6 +5,7 @@ import "./App.css";
 import { realtimeURL, restdb } from "./helper.js";
 import { Button, Loader } from "semantic-ui-react";
 import styled, { keyframes } from "styled-components";
+import { Offline, Online } from "react-detect-offline";
 
 const App = () => {
   const [ping, setPing] = useState(new Date());
@@ -48,72 +49,81 @@ const App = () => {
   }, []);
 
   return (
-    <Container
-      style={{ background: latest || submitted ? "rgb(0, 209, 255)" : "#fff" }}
-    >
-      <Top></Top>
-      <Middle>
-        {submitted && (
-          <Submitted>
-            <img src="fn.svg"></img>
-            <div style={{ marginTop: "1rem", fontWeight: 100 }}>thanks!</div>
-          </Submitted>
-        )}
-        {!submitted && !latest && (
-          <Waiting>
-            <img src="start.png" style={{ width: 400 }} />
-          </Waiting>
-        )}
-        {!submitted && latest && (
-          <form
-            onSubmit={async e => {
-              e.preventDefault();
-              try {
-                setSubmitting(true);
-                const res = await restdb.patch(
-                  `/rest/dc-fnl-tracking-person/${latest._id}/`,
-                  {
-                    email
+    <div>
+      <Online>
+        <Container
+          style={{
+            background: latest || submitted ? "rgb(0, 209, 255)" : "#fff"
+          }}
+        >
+          <Top></Top>
+          <Middle>
+            {submitted && (
+              <Submitted>
+                <img src="fn.svg"></img>
+                <div style={{ marginTop: "1rem", fontWeight: 100 }}>
+                  thanks!
+                </div>
+              </Submitted>
+            )}
+            {!submitted && !latest && (
+              <Waiting>
+                <img src="start.png" style={{ width: 400 }} />
+              </Waiting>
+            )}
+            {!submitted && latest && (
+              <form
+                onSubmit={async e => {
+                  e.preventDefault();
+                  try {
+                    setSubmitting(true);
+                    const res = await restdb.patch(
+                      `/rest/dc-fnl-tracking-person/${latest._id}/`,
+                      {
+                        email
+                      }
+                    );
+                    setSubmitted(true);
+                    setSubmitting(false);
+                    setLatest(false);
+                    setTimeout(() => setSubmitted(false), 4000);
+                  } catch (error) {
+                    console.log(error);
+                    setSubmitting(false);
+                    setLatest(false);
                   }
-                );
-                setSubmitted(true);
-                setSubmitting(false);
-                setLatest(false);
-                setTimeout(() => setSubmitted(false), 4000);
-              } catch (error) {
-                console.log(error);
-                setSubmitting(false);
-                setLatest(false);
-              }
-              return false;
-            }}
-          >
-            <Input
-              autoFocus
-              onKeyUp={e => setEmail(e.target.value)}
-              placeholder="your@email.com"
-              type="email"
-              disabled={submitting}
-            ></Input>
-            <Buttons>
-              {!submitting && (
-                <Button type="button" onClick={() => setLatest("")}>
-                  cancel
-                </Button>
-              )}
-              <Button primary type="submit">
-                {submitting ? (
-                  <Loader size="tiny" inverted active inline />
-                ) : (
-                  "send me info!"
-                )}
-              </Button>
-            </Buttons>
-          </form>
-        )}
-      </Middle>
-      <Bottom></Bottom>
-    </Container>
+                  return false;
+                }}
+              >
+                <Input
+                  autoFocus
+                  onKeyUp={e => setEmail(e.target.value)}
+                  placeholder="your@email.com"
+                  type="email"
+                  disabled={submitting}
+                ></Input>
+                <Buttons>
+                  {!submitting && (
+                    <Button type="button" onClick={() => setLatest("")}>
+                      cancel
+                    </Button>
+                  )}
+                  <Button primary type="submit">
+                    {submitting ? (
+                      <Loader size="tiny" inverted active inline />
+                    ) : (
+                      "send me info!"
+                    )}
+                  </Button>
+                </Buttons>
+              </form>
+            )}
+          </Middle>
+          <Bottom></Bottom>
+        </Container>
+      </Online>
+      <Offline>Offline</Offline>
+    </div>
   );
   return (
     <div className="App">
