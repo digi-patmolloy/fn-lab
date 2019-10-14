@@ -125,7 +125,7 @@ const App = () => {
                     {submitting ? (
                       <Loader size="tiny" inverted active inline />
                     ) : (
-                      "send me info!"
+                      "submit"
                     )}
                   </Button>
                 </Buttons>
