@@ -5,7 +5,7 @@
   "homepage": ".",
   "dependencies": {
     "axios": "^0.16.2",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "moment": "^2.24.0",
     "react": "^16.8.0",
     "react-detect-offline": "^2.4.0",
